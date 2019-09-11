@@ -1,0 +1,10 @@
+E:\G\EmailSystem\TestDemo\bin\Debug\TestDemo.exe.config
+E:\G\EmailSystem\TestDemo\bin\Debug\TestDemo.exe
+E:\G\EmailSystem\TestDemo\bin\Debug\TestDemo.pdb
+E:\G\EmailSystem\TestDemo\obj\Debug\TestDemo.csprojAssemblyReference.cache
+E:\G\EmailSystem\TestDemo\obj\Debug\TestDemo.csproj.CoreCompileInputs.cache
+E:\G\EmailSystem\TestDemo\obj\Debug\TestDemo.exe
+E:\G\EmailSystem\TestDemo\obj\Debug\TestDemo.pdb
+E:\G\EmailSystem\TestDemo\bin\Debug\EmailSys.dll
+E:\G\EmailSystem\TestDemo\bin\Debug\EmailSys.pdb
+E:\G\EmailSystem\TestDemo\obj\Debug\TestDemo.csproj.CopyComplete

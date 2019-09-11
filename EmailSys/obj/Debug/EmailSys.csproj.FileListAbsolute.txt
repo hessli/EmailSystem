@@ -1,0 +1,16 @@
+D:\gitDemo\demo\EmailSys\EmailSys\bin\Debug\EmailSys.dll
+D:\gitDemo\demo\EmailSys\EmailSys\bin\Debug\EmailSys.pdb
+D:\gitDemo\demo\EmailSys\EmailSys\obj\Debug\EmailSys.dll
+D:\gitDemo\demo\EmailSys\EmailSys\obj\Debug\EmailSys.pdb
+D:\gitDemo\demo\EmailSys\EmailSys\obj\Debug\EmailSys.csprojResolveAssemblyReference.cache
+D:\gitDemo\EmailSystem\EmailSys\obj\Debug\EmailSys.dll
+D:\gitDemo\EmailSystem\EmailSys\obj\Debug\EmailSys.pdb
+D:\gitDemo\EmailSystem\EmailSys\bin\Debug\EmailSys.dll
+D:\gitDemo\EmailSystem\EmailSys\bin\Debug\EmailSys.pdb
+D:\gitDemo\EmailSystem\EmailSys\obj\Debug\EmailSys.csprojResolveAssemblyReference.cache
+E:\G\EmailSystem\EmailSys\bin\Debug\EmailSys.dll
+E:\G\EmailSystem\EmailSys\bin\Debug\EmailSys.pdb
+E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.csproj.CoreCompileInputs.cache
+E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.dll
+E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.pdb
+E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.csprojAssemblyReference.cache

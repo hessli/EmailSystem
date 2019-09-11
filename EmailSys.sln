@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailSys", "EmailSys\EmailSys.csproj", "{6BFDD427-244A-40C6-AAF8-BE26F054E17C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDemo", "TestDemo\TestDemo.csproj", "{E889A714-89CA-4F82-9D06-BC83A1612561}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6BFDD427-244A-40C6-AAF8-BE26F054E17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BFDD427-244A-40C6-AAF8-BE26F054E17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BFDD427-244A-40C6-AAF8-BE26F054E17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BFDD427-244A-40C6-AAF8-BE26F054E17C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E889A714-89CA-4F82-9D06-BC83A1612561}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E889A714-89CA-4F82-9D06-BC83A1612561}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E889A714-89CA-4F82-9D06-BC83A1612561}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E889A714-89CA-4F82-9D06-BC83A1612561}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {524A54CF-8D4B-4BE2-A666-0AD78030DDA7}
+	EndGlobalSection
+EndGlobal
