@@ -7,27 +7,38 @@ namespace EmailSys.Core
     public class SendResultEventArgs : EventArgs
     {
 
+
+        public SendResultEventArgs(string tagName, IList<string> tos,
+            string subject, uint packageId, string body, Encoding bodyEncoding,
+            Encoding subjectEncoding, bool isBodyHtml,
+            string attachmentPath, SendResult result, string message)
+        {
+            Tos = tos;
+            Subject = subject;
+            Body = body;
+            PackageId = packageId;
+            TagName = tagName;
+            BodyEncoding = bodyEncoding;
+            SubjectEncoding = subjectEncoding;
+            IsBodyHtml = isBodyHtml;
+            AttachmentPath = attachmentPath;
+            SendResult = result;
+            Message = message;
+        }
+        public SendResultEventArgs(string tagName, EmitterPackageData data,
+SendResult result, string message) : this(tagName, data.Tos, data.Subject,
+    data.PackageId, data.Body, data.BodyEncoding,
+    data.SubjectEncoding, data.IsBodyHtml, data.AttachmentPath, result, message)
+        {
+
+        }
         public SendResultEventArgs(string tagName, EmitterPackageData data,
            SendResult result, Exception ex)
             : this(tagName, data, result, ex == null ? "" : ex.Message)
         {
 
         }
-        public SendResultEventArgs(string tagName, EmitterPackageData data,
-            SendResult result, string message)
-        {
-            Tos = data.Tos;
-            Subject = data.Subject;
-            Body = data.Body;
-            PackageId = data.PackageId;
-            TagName = tagName;
-            BodyEncoding = data.BodyEncoding;
-            SubjectEncoding = data.SubjectEncoding;
-            IsBodyHtml = data.IsBodyHtml;
-            AttachmentPath = data.AttachmentPath;
-            SendResult = result;
-            Message = message;
-        }
+
 
         public uint PackageId { get; private set; }
         public string TagName { get; private set; }

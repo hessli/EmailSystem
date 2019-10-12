@@ -39,6 +39,7 @@
     <Compile Include="Core\EmitterEventHandler.cs" />
     <Compile Include="Core\EmitterPackageData.cs" />
     <Compile Include="Core\EmailEnums.cs" />
+    <Compile Include="Core\GeneratorPackgeId.cs" />
     <Compile Include="Core\ObjectCopier.cs" />
     <Compile Include="EmailEmitter.cs" />
     <Compile Include="EmailEmitterController.cs" />

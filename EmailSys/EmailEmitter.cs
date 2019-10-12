@@ -16,10 +16,7 @@ namespace EmailSys
         private ConcurrentQueue<EmitterPackageData> _dataQueue;
 
         private IEmailConfig _emailConfig;
-
-        private object _synPackeIdObj = new object();
-
-        private uint _packageId;
+        
 
         private object _synState = new object();
 
@@ -62,27 +59,14 @@ namespace EmailSys
         {
             State = RuningState.Runing;
 
-            JobManager.InitialStart(this, 30000);
+            JobManager.InitialStart(this, 3000);
         }
 
-        private uint GetPakcageId()
-        {
-            uint packageId;
-            lock (_synPackeIdObj)
-            {
-                this._packageId += 1u;
-                if (this._packageId == 0u)
-                {
-                    this._packageId += 1u;
-                }
-                packageId = this._packageId;
-            }
-            return packageId;
-        }
+           
     
         public void Send(IList<string> tos, string subject, string body, Encoding subjectEncoding, Encoding bodyEncoding, bool isHtmlBody, string attachmentPath)
         {
-                var packageId = this.GetPakcageId();
+            var packageId = GeneratorPackgeId.GetPakcageId();
 
                 EmitterPackageData data = new EmitterPackageData(packageId,tos, subject, body);
 

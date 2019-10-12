@@ -39,13 +39,24 @@ namespace EmailSys.Base
                 TagName = "163",
             };
 
+            var qqConfig = new Core.SmtpHostConfig
+            {
+                Account = "",
+                Host="smtp.qq.com",
+                Credentials= "",
+                Port= 465,
+                TagName="qq"
+            };
+
             wyConfig.InterceptorConfig = new List<InterceptorConfig>();
 
-            wyConfig.InterceptorConfig.Add(new CommInterceptorConfig(wyConfig.TagName, (int)Frequency.Hour, 1));
+            wyConfig.InterceptorConfig.Add(new CommInterceptorConfig(wyConfig.TagName, (int)Frequency.Hour, 3));
 
-            wyConfig.InterceptorConfig.Add(new CommInterceptorConfig(wyConfig.TagName, (int)Frequency.Day, 2));
+            wyConfig.InterceptorConfig.Add(new CommInterceptorConfig(wyConfig.TagName, (int)Frequency.Day, 5));
 
             configs.Add(wyConfig);
+
+            configs.Add(qqConfig);
 
             _accountCount++;
 

@@ -56,8 +56,11 @@ namespace EmailSys
 
                 if (!isSuccess)
                 {
-                    //此处可以做很多事情
-                    //比如触发重发事件
+                    //将当前服务停止
+                    //再次触发重发事件
+                    this.Stop();
+                    if(OnSendComplete!=null)
+                    OnSendComplete.Invoke(this,new SendResultEventArgs(this.TagName,tos,subject, GeneratorPackgeId.GetPakcageId(), body,bodyEncoding,subjectEncoding, isHtmlBody, "",SendResult.Ohter,""));
                     return;
                 }
             }
