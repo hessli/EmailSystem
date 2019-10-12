@@ -31,14 +31,13 @@ namespace EmailSys.Base
 
             var wyConfig = new Core.SmtpHostConfig
             {
-                Account = "hnyxlmq@163.com",
+                Account = "",
                 Host = "smtp.163.com",
-                Credentials = "1989124722limq",
+                Credentials = "",
                 Port = 25,
                 SSLPort = 465,
                 TagName = "163",
             };
-
 
             wyConfig.InterceptorConfig = new List<InterceptorConfig>();
 
