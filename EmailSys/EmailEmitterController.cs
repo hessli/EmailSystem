@@ -15,28 +15,19 @@ namespace EmailSys
     /// </summary>
     public class EmailEmitterController : BaseController
     {
-        //static EmailEmitterController _instance = null;
         private ConcurrentQueue<string> _emmitterQueue = new ConcurrentQueue<string>();
         private object _synch = new object();
-
         private ConcurrentDictionary<string, EmailEmitterService> _dicEmitter = new ConcurrentDictionary<string, EmailEmitterService>();
         public int CurrentCount { get; private set; } = 0;
-
-        public EmailEmitterController()
+         EmailEmitterController()
         {
 
         }
-        //static EmailEmitterController()
-        //{
-        //    _instance = new EmailEmitterController();
-        //}
-
-        //public static EmailEmitterController Instance
-        //{
-        //    get {
-        //        return _instance;
-        //    }
-        //}
+        static EmailEmitterController()
+        {
+            Instance = new EmailEmitterController();
+        }
+        public static EmailEmitterController Instance { get; private set; } = null;
         private void StopEmitter(string tagName)
         {
             if (string.IsNullOrWhiteSpace(tagName))

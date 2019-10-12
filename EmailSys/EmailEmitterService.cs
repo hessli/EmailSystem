@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using EmailSys.Impl;
 using EmailSys.Filter;
-using System.Collections;
-
 namespace EmailSys
 {
    public class EmailEmitterService

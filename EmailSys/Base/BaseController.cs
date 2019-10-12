@@ -31,9 +31,9 @@ namespace EmailSys.Base
 
             var wyConfig = new Core.SmtpHostConfig
             {
-                Account = "",
+                Account = "hnyxlmq@163.com",
                 Host = "smtp.163.com",
-                Credentials = "",
+                Credentials = "1989124722limq",
                 Port = 25,
                 SSLPort = 465,
                 TagName = "163",

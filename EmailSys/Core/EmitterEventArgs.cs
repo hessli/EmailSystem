@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace EmailSys.Core
-{ 
-    public  class SendResultEventArgs : EventArgs
+{
+    public class SendResultEventArgs : EventArgs
     {
 
         public SendResultEventArgs(string tagName, EmitterPackageData data,
-           SendResult result, Exception ex) 
-            : this(tagName,data,result,ex==null?"":ex.Message)
+           SendResult result, Exception ex)
+            : this(tagName, data, result, ex == null ? "" : ex.Message)
         {
 
         }
-        public SendResultEventArgs(string tagName, EmitterPackageData data, 
+        public SendResultEventArgs(string tagName, EmitterPackageData data,
             SendResult result, string message)
         {
             Tos = data.Tos;
@@ -28,35 +28,6 @@ namespace EmailSys.Core
             SendResult = result;
             Message = message;
         }
-
-        //public SendResultEventArgs(string tagName, 
-        //    EmitterPackageData packageData
-        //    ,SendResult result,string message)
-        //{
-        //    Tos = packageData.Tos;
-
-        //    Subject = packageData.Subject;
-
-        //    Body = packageData.Body;
-
-        //    PackageId = packageData.PackageId;
-
-        //    TagName = tagName;
-
-        //}
-        //public SendResultEventArgs(uint packageId,string tagName, IList<string> tos, 
-        //    string subject, string body)
-        //{
-        //    Tos = tos;
-
-        //    Subject = subject;
-
-        //    Body = body;
-
-        //    PackageId = packageId;
-
-        //    TagName = tagName;
-        //}
 
         public uint PackageId { get; private set; }
         public string TagName { get; private set; }
@@ -83,7 +54,7 @@ namespace EmailSys.Core
         /// <summary>
         /// 如果要发送html格式的消息，需要设置这个属性
         /// </summary>
-        public bool IsBodyHtml { get;private set; }
+        public bool IsBodyHtml { get; private set; }
 
         public string AttachmentPath { get; private set; }
 
@@ -92,5 +63,6 @@ namespace EmailSys.Core
 
         public string Message { get; private set; }
 
+    }
 
 }
