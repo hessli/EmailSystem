@@ -4,123 +4,57 @@ using System.Collections.Generic;
 using System.Text;
 using EmailSys.Impl;
 using EmailSys.Filter;
+using System.Collections;
 
 namespace EmailSys
 {
    public class EmailEmitterService
     {
-        private IEmailConfig _emailConfig;
-        public IEmailConfig EmailConfig
-        {
-            get
-            {
-                return _emailConfig;
-            }
-        }
-        private string _tagName;
-        private string TagName
-        {
-
-            get {
-
-                return _tagName;
-            }
-        }
-        /// <summary>
-        /// 应用程序出现异常
-        /// </summary>
-        public event EmitterErrorEventHandler OnError;
-
-        /// <summary>
-        /// smtp异常
-        /// </summary>
-        public event EmitterSmtpErrorEventHandler OnSmtpError;
-        /// <summary>
-        /// 服务停止事件
-        /// </summary>
-        public event EmitterReleasEventHandler OnReleas;
-
-        /// <summary>
-        /// 发送成功
-        /// </summary>
-        public event EmitterSuccessEventHandler OnSuccess;
-
-        public event EmitterArgErrorEventHandler OnArgError;
+        public IEmailConfig EmailConfig { get; }
+        public string TagName { get; private set; }
 
         private EmailEmitter _emailEmitter;
-
-        private RuningState _runingState;
-        public RuningState RuningState
-        {
-            get {
-                if (_emailEmitter == null)
-                {
-                    _runingState= RuningState.Stop;
-                }
-                else
-                {
-                    _runingState = _emailEmitter.RuningState;
-                }
-                return _runingState;
-            }
-        }
-
-        private IInterceptorEmitter _interceptorEmitter;
-        public IInterceptorEmitter  InterceptorEmitter {
-
-            get {
-                return _interceptorEmitter;
-            }set
-            {
-                _interceptorEmitter = value;
-            }
-        }
+        public IInterceptorEmitter InterceptorEmitter { get; set; }
 
         public EmailEmitterService(IEmailConfig emailConfig)
         {
-            _emailConfig = emailConfig;
+            EmailConfig = emailConfig;
 
-       
+            this.CreatEmitter(EmailConfig);
 
-            this.CreatEmitter(_emailConfig);
+            TagName = this._emailEmitter.TagName;
+        }
 
-            _tagName = this._emailEmitter.TagName;
+        public RuningState  State {
+
+            get {
+                return _emailEmitter.State;
+            }
         }
         public void Start()
         {
-            _emailEmitter.OnSmtpError += OnSmtpError;
-
-            _emailEmitter.OnReleas += OnReleas;
-
-            _emailEmitter.OnSuccess += OnSuccess;
-
-            _emailEmitter.OnError += OnError;
-
-            _emailEmitter.OnArgError += OnArgError;
-
-            _emailEmitter.Run();
+            _emailEmitter.onSendComplete += OnSendComplete;
+            _emailEmitter.Start();
         }
 
         public void Stop()
         {
-            if (_emailEmitter != null)
-            {
-                _emailEmitter.Stop();
+            _emailEmitter.Stop();
 
-                _emailEmitter = null;
-            }
         }
+
+        public event SendCompleteHandler OnSendComplete;
 
         public  void Send(IList<string> tos, string subject, string body, Encoding subjectEncoding, Encoding bodyEncoding, bool isHtmlBody, string attachmentPath)
         {
 
-            if (_interceptorEmitter != null)
+            if (InterceptorEmitter != null)
             {
                var record=  new CommInterceptorRecord(this.TagName);
 
                 record.Count = tos.Count;
 
-               var  isSuccess= _interceptorEmitter.IsInterceptor(record);
+               var  isSuccess= InterceptorEmitter.IsInterceptor(record);
 
                 if (!isSuccess)
                 {
@@ -157,6 +91,43 @@ namespace EmailSys
             EmailEmitter emailEmitter = new EmailEmitter(eConfig);
 
             _emailEmitter = emailEmitter;
+        }
+      
+         static HashSet<uint> cach = new  HashSet<uint>();
+         static object syncRoot = new object();
+        /// <summary>
+        /// 发送器因异常未发送完成的邮件
+        /// 转移到其他可用的发送器发送
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="args"></param>
+        public static void Transfer(EmailEmitterService service, SendResultEventArgs[] args)
+        {
+            lock (syncRoot)
+            {
+
+                if(args!=null && args.Length>0)
+                System.Console.WriteLine("TagName:" + args[0].TagName);
+
+                if (service != null && args != null && args.Length > 0)
+                {
+
+                    System.Console.WriteLine("ServiceName:"+service);
+
+
+                    foreach (var item in args)
+                    {
+                        if (cach.Contains(item.PackageId))
+                        {
+                            cach.Remove(item.PackageId);
+                            continue;
+                        }
+                        cach.Add(item.PackageId);
+
+                        service.Send(item.Tos, item.Subject, item.Body, item.SubjectEncoding, item.BodyEncoding, item.IsBodyHtml, item.AttachmentPath);
+                    }
+                }
+            }
         }
     }
 }

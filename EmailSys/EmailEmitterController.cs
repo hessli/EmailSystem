@@ -13,41 +13,30 @@ namespace EmailSys
     /// <summary>
     /// 控制器
     /// </summary>
-   public class EmailEmitterController: BaseController
+    public class EmailEmitterController : BaseController
     {
-        static EmailEmitterController _instance = null;
-
-        private ConcurrentQueue<string> _emmitterQueue = new ConcurrentQueue<string> ();
-
-        private int _currentCount=0;
-
+        //static EmailEmitterController _instance = null;
+        private ConcurrentQueue<string> _emmitterQueue = new ConcurrentQueue<string>();
         private object _synch = new object();
 
-        private ConcurrentDictionary<string, EmailEmitterService> _dicEmitter=new ConcurrentDictionary<string, EmailEmitterService> ();
-        public int CurrentCount
-        {
-            get {
-                return _currentCount;
-            }
-        }
+        private ConcurrentDictionary<string, EmailEmitterService> _dicEmitter = new ConcurrentDictionary<string, EmailEmitterService>();
+        public int CurrentCount { get; private set; } = 0;
 
         public EmailEmitterController()
         {
-              
-        }
 
-        static EmailEmitterController()
-        {
-            _instance = new EmailEmitterController();
         }
+        //static EmailEmitterController()
+        //{
+        //    _instance = new EmailEmitterController();
+        //}
 
-        public static EmailEmitterController Instance
-        {
-            get {
-                return _instance;
-            }
-        }
-
+        //public static EmailEmitterController Instance
+        //{
+        //    get {
+        //        return _instance;
+        //    }
+        //}
         private void StopEmitter(string tagName)
         {
             if (string.IsNullOrWhiteSpace(tagName))
@@ -61,7 +50,7 @@ namespace EmailSys
                 {
                     var currentName = string.Empty;
 
-                    var enumerator=_emmitterQueue.GetEnumerator();
+                    var enumerator = _emmitterQueue.GetEnumerator();
 
                     while (enumerator.MoveNext())
                     {
@@ -70,14 +59,11 @@ namespace EmailSys
                             EmailEmitterService service = null;
                             if (_dicEmitter.TryGetValue(tagName, out service))
                             {
-
                                 //不能移除，避免配置错误没有及时更新
                                 //_dicEmitter.TryRemove(tagName, out service);
-
                                 service.Stop();
-
                                 count = 0;
-                                _currentCount--;
+                                CurrentCount--;
                                 break;
                             }
                         }
@@ -107,11 +93,13 @@ namespace EmailSys
                     {
                         if (_dicEmitter.TryGetValue(tagName, out service))
                         {
-                            if (service.RuningState == RuningState.Runing)
+                            if (service.State == RuningState.Runing)
                             {
                                 _emmitterQueue.Enqueue(tagName);
                                 break;
                             }
+                            service = null;
+                            break;
                         }
                     }
                     count--;
@@ -124,7 +112,7 @@ namespace EmailSys
         {
             var emitter = Scheduled();
 
-            emitter.Send(tos,subject,body,subjectEncoding,bodyEncoding,isHtmlBody,attachmentPath);
+            emitter.Send(tos, subject, body, subjectEncoding, bodyEncoding, isHtmlBody, attachmentPath);
         }
         protected override void LoadData()
         {
@@ -154,8 +142,6 @@ namespace EmailSys
                            )
                         {
                             _dicEmitter.TryRemove(item.TagName, out emitterService);
-
-                            emitterService.Stop();
                         }
                         else
                         {
@@ -177,91 +163,51 @@ namespace EmailSys
 
                         newEmitterService.InterceptorEmitter = interceptorEmitter;
                     }
-
-                    newEmitterService.OnSuccess += NewEmitterService_OnSuccess;
-
-                    newEmitterService.OnReleas += NewEmitterService_OnReleas;
-
-                    newEmitterService.OnSmtpError += NewEmitterService_OnSmtpError;
-
-                    newEmitterService.OnError += NewEmitterService_OnError;
-
-                    newEmitterService.OnArgError += NewEmitterService_OnArgError;
+                    newEmitterService.OnSendComplete += NewEmitterService_OnSendComplete;
 
                     newEmitterService.Start();
 
-                    _dicEmitter.TryAdd(item.TagName,newEmitterService);
+                    _dicEmitter.TryAdd(item.TagName, newEmitterService);
 
                     _emmitterQueue.Enqueue(item.TagName);
                 }
-                _currentCount = _dicEmitter.Count;
+                CurrentCount = _dicEmitter.Count;
             }
         }
 
-        private void NewEmitterService_OnArgError(object sender, EmitterArgErrorEventArgs args)
+        private void NewEmitterService_OnSendComplete(object sender,
+            params SendResultEventArgs[] args)
         {
-            //dologo
-        }
-
-        private void NewEmitterService_OnError(object sender, EmitterErrorEventArgs args)
-        {
-             //dologo
-        }
-
-        private void NewEmitterService_OnSmtpError(object sender, EmitterSmtpErrorEventAgs args)
-        {
-            //dolog
-            var tagName = string.Empty;
-            if (args != null )
-            {
-                tagName = args.TagName;
-
-                StopEmitter(tagName);
-
-                EmailContainer container = new EmailSys.EmailContainer();
-
-                var service = this.Scheduled();
-
-                container.AddServiceComponent(service, args);
-            }
-        }
-        private void NewEmitterService_OnReleas(object sender, EmitterReleasEventArgs[] args)
-        {
-            var tagName = string.Empty;
             if (args != null && args.Length > 0)
             {
-                tagName = args[0].TagName;
 
-                StopEmitter(tagName);
-
-                EmailContainer container = new EmailSys.EmailContainer();
-
-                var service= this.Scheduled();
-
-                container.AddServiceComponent(service,args);
+                if (args[0].SendResult == SendResult.Ohter ||
+                    args[0].SendResult == SendResult.Smtp)
+                {
+                    StopEmitter(args[0].TagName);
+                    var service = Scheduled();
+                    EmailEmitterService.Transfer(service, args);
+                }
+                else
+                {
+                    //dolog.....
+                }
             }
         }
-
-        private void NewEmitterService_OnSuccess(object sender, EmitterSuccessEventArgs args)
-        {
-           //dolog
-        }
-
         public override bool IsInitialed
         {
             get
             {
-                return  _currentCount > 0;
+                return CurrentCount > 0;
             }
         }
-
         protected override void Clear()
         {
             lock (_synch)
             {
                 EmailEmitterService[] old = new EmailEmitterService[_dicEmitter.Count];
 
-                _dicEmitter.Values.CopyTo(old,0);
+                _dicEmitter.Values.CopyTo(old, 0);
 
                 _dicEmitter.Clear();
 

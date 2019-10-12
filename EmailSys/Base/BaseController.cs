@@ -1,64 +1,27 @@
 ﻿using EmailSys.Core;
 using EmailSys.Impl;
 using EmailSys.Interceptor;
-using System;
 using System.Collections.Generic;
-using System.Timers;
 
 namespace EmailSys.Base
 {
-    public abstract class BaseController
-    {
-        private string _controllerName;
 
-        public string ControllerName
-        {
-            get
-            {
-                return _controllerName;
-            }
-        }
+
+    public abstract class BaseController:IJob
+    {
+        public string ControllerName { get; }
 
         static string DEFAULTNAME = "Email";
-
-        private int _syncSpan = 3000;
-
-        private Timer _timer;
 
         private int _accountCount = 0;
 
         public BaseController(string controllerName)
         {
-            _controllerName = controllerName;
+            ControllerName = controllerName;
         }
         public BaseController() : this(DEFAULTNAME)
         {
-
-        }
-
-        public void Init()
-        {
-            lock (this)
-            {
-                try
-                {
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-
-                }
-                _timer = new Timer();
-
-                _timer.Interval = _syncSpan;
-
-                _timer.AutoReset = false;
-
-                _timer.Elapsed += LoadElapsed;
-
-                _timer.Start();
-            }
-
+            JobManager.InitialStart(this, 7200000);
         }
 
         protected IList<SmtpHostConfig> LoadConfig()
@@ -68,13 +31,14 @@ namespace EmailSys.Base
 
             var wyConfig = new Core.SmtpHostConfig
             {
-                Account = "邮箱账户",
+                Account = "",
                 Host = "smtp.163.com",
-                Credentials = "邮箱密码",
+                Credentials = "",
                 Port = 25,
                 SSLPort = 465,
                 TagName = "163",
             };
+
 
             wyConfig.InterceptorConfig = new List<InterceptorConfig>();
 
@@ -89,48 +53,6 @@ namespace EmailSys.Base
             return configs;
         }
 
-        protected void LoadElapsed(object sender, ElapsedEventArgs args)
-        {
-
-            //定时更新配置文件
-            Timer timer = sender as Timer;
-
-            lock (this)
-            {
-                try
-                {
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-
-
-                }
-                timer.Interval = _syncSpan;
-                timer.Start();
-            }
-
-        }
-
-
-        public virtual void Release()
-        {
-
-            lock (this)
-            {
-
-                //释放控制器
-                if (this._timer != null)
-                {
-                    this._timer.Stop();
-                    this._timer.Dispose();
-                    _timer = null;
-                }
-                //释放发送器
-                Clear();
-            }
-        }
-
         /// <summary>
         /// 如果加载到了配置文件就说明初始化
         /// 成功了
@@ -142,9 +64,13 @@ namespace EmailSys.Base
                 return _accountCount > 0;
             }
         }
-
         protected abstract void LoadData();
 
         protected abstract void Clear();
+
+        public void Excute()
+        {
+            LoadData();
+        }
     }
 }

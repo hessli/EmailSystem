@@ -49,6 +49,7 @@
     <Compile Include="Filter\DayFilter.cs" />
     <Compile Include="Filter\HourFilter.cs" />
     <Compile Include="Filter\OrFilter.cs" />
+    <Compile Include="Job\IJob.cs" />
     <Compile Include="Impl\IBaseConfig.cs" />
     <Compile Include="Core\SmtpHostConfig.cs" />
     <Compile Include="Base\BaseController.cs" />
@@ -63,8 +64,10 @@
     <Compile Include="Interceptor\CommInterceptorConfig.cs" />
     <Compile Include="Interceptor\InterceptorEmitter.cs" />
     <Compile Include="Interceptor\Interceptors.cs" />
+    <Compile Include="Job\JobCollection.cs" />
+    <Compile Include="Job\JobConfig.cs" />
+    <Compile Include="Job\JobManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EmailContainer.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

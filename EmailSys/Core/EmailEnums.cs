@@ -23,10 +23,12 @@
         Day = 2
     }
 
-    public enum ErrorLevel
+    public enum SendResult
     {
-        Application = 1,
-        Emitter = 2,
-        Args = 3
+        Smtp=1,
+        Args=2,
+        Success=3,
+        Ohter=4
+
     }
 }

@@ -1,232 +1,190 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Mail;
 using System.Text;
 
 namespace EmailSys.Core
 { 
-    public abstract class AbEmitterEventArgs : EventArgs
+    public  class SendResultEventArgs : EventArgs
     {
-        private string _tagName;
 
-        private string _subject;
-
-        private string _body;
-
-        private Encoding _subjectEncoding;
-
-        private Encoding _bodyEncoding;
-
-        private DateTime _time = DateTime.Now;
-
-        private uint _packageId;
-
-        private IList<string> _tos;
-        public AbEmitterEventArgs(uint packageId,string tagName, IList<string> tos, string subject, string body)
-        {
-            _tos = tos;
-
-            _subject = subject;
-
-            _body = body;
-
-            _packageId = packageId;
-
-            _tagName = tagName;
-        }
-
-        public uint PackageId {
-
-            get {
-                return _packageId;
-            }
-        }
-        public string TagName
+        public SendResultEventArgs(string tagName, EmitterPackageData data,
+           SendResult result, Exception ex) 
+            : this(tagName,data,result,ex==null?"":ex.Message)
         {
 
-            get
-            {
-
-                return _tagName;
-            }
         }
-
-        public DateTime Time
+        public SendResultEventArgs(string tagName, EmitterPackageData data, 
+            SendResult result, string message)
         {
-            get
-            {
-
-                return _time;
-            }
-
+            Tos = data.Tos;
+            Subject = data.Subject;
+            Body = data.Body;
+            PackageId = data.PackageId;
+            TagName = tagName;
+            BodyEncoding = data.BodyEncoding;
+            SubjectEncoding = data.SubjectEncoding;
+            IsBodyHtml = data.IsBodyHtml;
+            AttachmentPath = data.AttachmentPath;
+            SendResult = result;
+            Message = message;
         }
 
-        public IList<string> Tos
-        {
+        //public SendResultEventArgs(string tagName, 
+        //    EmitterPackageData packageData
+        //    ,SendResult result,string message)
+        //{
+        //    Tos = packageData.Tos;
 
-            get {
-                return _tos;
-            }
-        }
+        //    Subject = packageData.Subject;
+
+        //    Body = packageData.Body;
+
+        //    PackageId = packageData.PackageId;
+
+        //    TagName = tagName;
+
+        //}
+        //public SendResultEventArgs(uint packageId,string tagName, IList<string> tos, 
+        //    string subject, string body)
+        //{
+        //    Tos = tos;
+
+        //    Subject = subject;
+
+        //    Body = body;
+
+        //    PackageId = packageId;
+
+        //    TagName = tagName;
+        //}
+
+        public uint PackageId { get; private set; }
+        public string TagName { get; private set; }
+
+        public DateTime Time { get; } = DateTime.Now;
+
+        public IList<string> Tos { get; private set; }
 
         /// <summary>
         /// 邮件主题
         /// </summary>
-        public string Subject
-        {
-            get
-            {
-
-                return _subject;
-            }
-        }
+        public string Subject { get; private set; }
         /// <summary>
         /// 邮件内容编码
         /// </summary>
-        public Encoding BodyEncoding
-        {
-            get
-            {
-                return _bodyEncoding;
-            }
-            set
-            {
+        public Encoding BodyEncoding { get; private set; }
 
-                _bodyEncoding = value;
-            }
-        }
-
-
-        public Encoding SubjectEncoding
-        {
-            get
-            {
-                return _subjectEncoding;
-            }
-            set
-            {
-
-                _subjectEncoding = value;
-            }
-        }
+        public Encoding SubjectEncoding { get; private set; }
         /// <summary>
         /// 邮件内容
         /// </summary>
-        public string Body
-        {
-            get
-            {
-                return _body;
-            }
-        }
+        public string Body { get; private set; }
 
         /// <summary>
         /// 如果要发送html格式的消息，需要设置这个属性
         /// </summary>
-        public bool IsBodyHtml { get; set; }
+        public bool IsBodyHtml { get;private set; }
 
-        public string AttachmentPath { get; set; }
+        public string AttachmentPath { get; private set; }
 
-        internal virtual void Set(EmitterPackageData data)
-        {
-            if (data != null)
-            {
 
-                this.AttachmentPath = data.AttachmentPath;
+        public SendResult SendResult { get; private set; }
 
-                this.IsBodyHtml = data.IsBodyHtml;
+        public string Message { get; private set; }
 
-                this.SubjectEncoding = data.SubjectEncoding;
+        //public   void Set(EmitterPackageData data)
+        //{
+        //    if (data != null)
+        //    {
 
-                this.BodyEncoding = data.BodyEncoding;
-            }
-        }
+        //        this.AttachmentPath = data.AttachmentPath;
+
+        //        this.IsBodyHtml = data.IsBodyHtml;
+
+        //        this.SubjectEncoding = data.SubjectEncoding;
+
+        //        this.BodyEncoding = data.BodyEncoding;
+        //    }
+        //}
     }
 
-    public class EmitterSuccessEventArgs : AbEmitterEventArgs
-    {
-        public EmitterSuccessEventArgs(uint packageId,string tagName, IList<string> tos, string subject, string body)
-            : base(packageId,tagName, tos, subject, body)
-        {
+    //public class EmitterSuccessEventArgs : AbEmitterEventArgs
+    //{
+    //    public EmitterSuccessEventArgs(uint packageId,string tagName, IList<string> tos, string subject, string body)
+    //        : base(packageId,tagName, tos, subject, body)
+    //    {
 
              
-        }
-    }
+    //    }
+    //}
 
-    public class EmitterErrorEventArgs : AbEmitterEventArgs
-    {
-        private ErrorLevel _errorLevel;
+    //public class EmitterErrorEventArgs : AbEmitterEventArgs
+    //{
+    //    private ErrorLevel _errorLevel;
 
-        private Exception _exception;
-        public EmitterErrorEventArgs(uint packageId,string tagName, IList<string> tos, string subject, string body, ErrorLevel level, Exception ex) 
-            :base(packageId, tagName,tos,subject,body)
-        {
-            _errorLevel = level;
+    //    private Exception _exception;
+    //    public EmitterErrorEventArgs(uint packageId,string tagName, IList<string> tos, string subject, string body, ErrorLevel level, Exception ex) 
+    //        :base(packageId, tagName,tos,subject,body)
+    //    {
+    //        _errorLevel = level;
 
-            _exception = ex;
+    //        _exception = ex;
 
-        } 
+    //    } 
 
-        public ErrorLevel ErrorLevel
-        {
-            get {
-                return _errorLevel;
-            }
-        }
+    //    public ErrorLevel ErrorLevel
+    //    {
+    //        get {
+    //            return _errorLevel;
+    //        }
+    //    }
 
-        public Exception exception
-        {
-            get {
+    //    public Exception exception
+    //    {
+    //        get {
 
-                return _exception;
-            }
-        }
-    }
+    //            return _exception;
+    //        }
+    //    }
+    //}
 
-    public class EmitterSmtpErrorEventAgs : AbEmitterEventArgs
-    {
-        private SmtpException _ex;
-        public EmitterSmtpErrorEventAgs(uint packageId, string tagName, IList<string> tos, string subject, string body,SmtpException ex) :
-            base(packageId, tagName, tos, subject, body)
-        {
-            _ex = ex;
-        }
-        public SmtpException Ex {
+    //public class EmitterSmtpErrorEventAgs : AbEmitterEventArgs
+    //{
+    //    private SmtpException _ex;
+    //    public EmitterSmtpErrorEventAgs(uint packageId, string tagName, IList<string> tos, string subject, string body,SmtpException ex) :
+    //        base(packageId, tagName, tos, subject, body)
+    //    {
+    //        _ex = ex;
+    //    }
+    //    public SmtpException Ex {
 
-            get {
-                return _ex;
-            }
-        }
-    }
+    //        get {
+    //            return _ex;
+    //        }
+    //    }
+    //}
 
-    public class EmitterReleasEventArgs : AbEmitterEventArgs
-    {
-        public EmitterReleasEventArgs(uint packageId, string tagName, IList<string> tos, string subject, string body) :
-            base(packageId, tagName, tos, subject, body)
-        {
+    //public class EmitterReleasEventArgs : AbEmitterEventArgs
+    //{
+    //    public EmitterReleasEventArgs(uint packageId, string tagName, IList<string> tos, string subject, string body) :
+    //        base(packageId, tagName, tos, subject, body)
+    //    {
 
             
              
-        }
-    }
+    //    }
+    //}
 
 
-    public class EmitterArgErrorEventArgs : EventArgs
-    {
+    //public class EmitterArgErrorEventArgs : EventArgs
+    //{
 
 
-        public EmitterArgErrorEventArgs(Exception ex)
-        {
-            _ex = ex;
-        }
+    //    public EmitterArgErrorEventArgs(Exception ex)
+    //    {
+    //        Ex = ex;
+    //    }
+    //    public Exception Ex { get; }
 
-        private Exception _ex;
-         public Exception Ex {
-
-            get {
-                return _ex;
-            }
-        }
-
-    }
+    //}
 }
