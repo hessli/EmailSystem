@@ -13,4 +13,3 @@ E:\G\EmailSystem\EmailSys\bin\Debug\EmailSys.pdb
 E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.csproj.CoreCompileInputs.cache
 E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.dll
 E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.pdb
-E:\G\EmailSystem\EmailSys\obj\Debug\EmailSys.csprojAssemblyReference.cache

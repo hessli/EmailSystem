@@ -106,16 +106,8 @@ namespace EmailSys
         {
             lock (syncRoot)
             {
-
-                if(args!=null && args.Length>0)
-                System.Console.WriteLine("TagName:" + args[0].TagName);
-
                 if (service != null && args != null && args.Length > 0)
                 {
-
-                    System.Console.WriteLine("ServiceName:"+service);
-
-
                     foreach (var item in args)
                     {
                         if (cach.Contains(item.PackageId))
